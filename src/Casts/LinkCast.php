@@ -10,15 +10,23 @@ class LinkCast implements CastsAttributes
 {
     public function get(Model $model, string $key, mixed $value, array $attributes): mixed
     {
+        if (is_string($value)) {
+            $value = json_decode($value, true);
+        }
+
         return EntitiesLink::makeFromArray($value);
     }
 
     public function set(Model $model, string $key, mixed $value, array $attributes): mixed
     {
-        if (is_array($value)) {
-            return $value;
+        if ($value instanceof EntitiesLink) {
+            $value = $value->toArray();
         }
 
-        return $value->toArray();
+        if (is_array($value)) {
+            $value = json_encode($value);
+        }
+
+        return $value;
     }
 }
