@@ -9,6 +9,7 @@ use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Set;
 use Illuminate\Support\Str;
 use Outerweb\FilamentLinkPicker\Entities\LinkPickerRoute;
 use Outerweb\FilamentLinkPicker\Facades\LinkPicker as FacadesLinkPicker;
@@ -203,16 +204,8 @@ class LinkPicker extends Field
                         ->options($this->getRouteNameOptions())
                         ->nullable()
                         ->live()
-                        ->afterStateUpdated(function (Select $component) {
-                            // Reset the parameters when the route changes.
-                            $state = $this->getState();
-                            $state['parameters'] = [];
-                            $this->state($state);
-
-                            if ($fieldset = $component->getContainer()->getComponent('parameters')) {
-                                $fieldset->getChildComponentContainer()
-                                    ->fill();
-                            }
+                        ->afterStateUpdated(function (Set $set) {
+                            $set('parameters', []);
                         }),
 
                     Fieldset::make(__('filament-link-picker::translations.forms.labels.parameters'))
@@ -241,8 +234,6 @@ class LinkPicker extends Field
                         ]),
                 ]),
         ]);
-
-        $this->live(debounce: 500);
 
         $this->registerActions([
             fn(self $component): Action => $component->getEditAction(),

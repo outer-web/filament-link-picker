@@ -2,6 +2,12 @@
 
 All notable changes to `filament-link-picker` will be documented in this file.
 
+## 1.2.1 - 2024-03-02
+
+### Fixed
+
+- Fixed a bug with resetting form fields
+
 ## 1.2.0 - 2024-03-02
 
 ### Fixed
