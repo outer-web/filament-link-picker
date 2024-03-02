@@ -126,20 +126,24 @@ class LinkPicker extends Field
         return $route->label;
     }
 
-    public function getSelectedRoute(): ?LinkPickerRoute
+    public function getSelectedRoute($state): ?LinkPickerRoute
     {
+        if (!isset($state['route_name'])) {
+            return null;
+        }
+
         return collect($this->getRoutes())
-            ->firstWhere('name', $this->getState()['route_name']);
+            ->firstWhere('name', $state['route_name']);
     }
 
-    public function getSelectedRouteHasParameters(): bool
+    public function getSelectedRouteHasParameters($state): bool
     {
-        return count($this->getSelectedRouteParameters()) > 0;
+        return count($this->getSelectedRouteParameters($state)) > 0;
     }
 
-    public function getSelectedRouteParameters(): array
+    public function getSelectedRouteParameters($state): array
     {
-        return $this->getSelectedRoute()?->getRouteParameters()?->toArray() ?? [];
+        return $this->getSelectedRoute($state)?->getRouteParameters()?->toArray() ?? [];
     }
 
     public function getRouteNameOptions(): array
@@ -212,15 +216,15 @@ class LinkPicker extends Field
                         }),
 
                     Fieldset::make(__('filament-link-picker::translations.forms.labels.parameters'))
-                        ->hidden(fn() => !$this->getSelectedRouteHasParameters())
-                        ->schema(fn() => collect($this->getSelectedRouteParameters())
+                        ->hidden(fn($state) => !$this->getSelectedRouteHasParameters($state))
+                        ->schema(fn($state) => collect($this->getSelectedRouteParameters($state))
                             ->map(fn(object $parameter) => $this->makeFieldFromParameter($parameter))
                             ->toArray()),
 
                     Fieldset::make(__('filament-link-picker::translations.forms.labels.options'))
                         ->hidden(
-                            fn() =>
-                            is_null($this->getSelectedRoute()) ||
+                            fn($state) =>
+                            is_null($this->getSelectedRoute($state)) ||
                             !(
                                 $this->getAllowsDownload() &&
                                 $this->getAllowsOpenInNewTab()

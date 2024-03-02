@@ -109,8 +109,12 @@ class LinkPicker
         return $this->combineLocalizedRoutes($this->routes);
     }
 
-    public function getRouteByName(string $name): ?LinkPickerRoute
+    public function getRouteByName(?string $name): ?LinkPickerRoute
     {
+        if (is_null($name)) {
+            return null;
+        }
+
         return $this->getRoutes()[$name] ?? null;
     }
 
