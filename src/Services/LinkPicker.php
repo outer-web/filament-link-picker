@@ -31,7 +31,7 @@ class LinkPicker
 
     protected ?Closure $buildLocalizedRouteUsing = null;
 
-    public function getExternalLinkRoute(): LinkPickerRoute
+    public function getExternalLinkRoute() : LinkPickerRoute
     {
         return LinkPickerRoute::make(
             self::ROUTE_EXTERNAL_LINK,
@@ -40,7 +40,7 @@ class LinkPicker
         );
     }
 
-    public function getMailtoRoute(): LinkPickerRoute
+    public function getMailtoRoute() : LinkPickerRoute
     {
         return LinkPickerRoute::make(
             self::ROUTE_MAILTO,
@@ -49,7 +49,7 @@ class LinkPicker
         );
     }
 
-    public function getTelRoute(): LinkPickerRoute
+    public function getTelRoute() : LinkPickerRoute
     {
         return LinkPickerRoute::make(
             self::ROUTE_TEL,
@@ -58,9 +58,9 @@ class LinkPicker
         );
     }
 
-    public function addRoute(LinkPickerRoute $route, bool $override = false): static
+    public function addRoute(LinkPickerRoute $route, bool $override = false) : static
     {
-        if ($this->routes[$route->name] ?? false && !$override) {
+        if ($this->routes[$route->name] ?? false && ! $override) {
             return $this;
         }
 
@@ -69,47 +69,47 @@ class LinkPicker
         return $this;
     }
 
-    public function disableExternalLinks(bool|Closure $disableExternalLinks = true): static
+    public function disableExternalLinks(bool|Closure $disableExternalLinks = true) : static
     {
         $this->disableExternalLinks = $disableExternalLinks;
 
         return $this;
     }
 
-    public function disableMailto(bool|Closure $disableMailto = true): static
+    public function disableMailto(bool|Closure $disableMailto = true) : static
     {
         $this->disableMailto = $disableMailto;
 
         return $this;
     }
 
-    public function disableTel(bool|Closure $disableTel = true): static
+    public function disableTel(bool|Closure $disableTel = true) : static
     {
         $this->disableTel = $disableTel;
 
         return $this;
     }
 
-    public function disableDownload(bool|Closure $disableDownload = true): static
+    public function disableDownload(bool|Closure $disableDownload = true) : static
     {
         $this->disableDownload = $disableDownload;
 
         return $this;
     }
 
-    public function disableOpenInNewTab(bool|Closure $disableOpenInNewTab = true): static
+    public function disableOpenInNewTab(bool|Closure $disableOpenInNewTab = true) : static
     {
         $this->disableOpenInNewTab = $disableOpenInNewTab;
 
         return $this;
     }
 
-    public function getRoutes(): array
+    public function getRoutes() : array
     {
         return $this->combineLocalizedRoutes($this->routes);
     }
 
-    public function getRouteByName(?string $name): ?LinkPickerRoute
+    public function getRouteByName(?string $name) : ?LinkPickerRoute
     {
         if (is_null($name)) {
             return null;
@@ -118,62 +118,62 @@ class LinkPicker
         return $this->getRoutes()[$name] ?? null;
     }
 
-    public function getAllowsExternalLinks(): bool|Closure
+    public function getAllowsExternalLinks() : bool|Closure
     {
-        return !($this->disableExternalLinks instanceof Closure
+        return ! ($this->disableExternalLinks instanceof Closure
             ? call_user_func($this->disableExternalLinks)
             : $this->disableExternalLinks);
     }
 
-    public function getAllowsMailto(): bool|Closure
+    public function getAllowsMailto() : bool|Closure
     {
-        return !($this->disableMailto instanceof Closure
+        return ! ($this->disableMailto instanceof Closure
             ? call_user_func($this->disableMailto)
             : $this->disableMailto);
     }
 
-    public function getAllowsTel(): bool|Closure
+    public function getAllowsTel() : bool|Closure
     {
-        return !($this->disableTel instanceof Closure
+        return ! ($this->disableTel instanceof Closure
             ? call_user_func($this->disableTel)
             : $this->disableTel);
     }
 
-    public function getAllowsDownload(): bool|Closure
+    public function getAllowsDownload() : bool|Closure
     {
-        return !($this->disableDownload instanceof Closure
+        return ! ($this->disableDownload instanceof Closure
             ? call_user_func($this->disableDownload)
             : $this->disableDownload);
     }
 
-    public function getAllowsOpenInNewTab(): bool|Closure
+    public function getAllowsOpenInNewTab() : bool|Closure
     {
-        return !($this->disableOpenInNewTab instanceof Closure
+        return ! ($this->disableOpenInNewTab instanceof Closure
             ? call_user_func($this->disableOpenInNewTab)
             : $this->disableOpenInNewTab);
     }
 
-    public function combineLocalizedRoutesUsing(Closure $closure): static
+    public function combineLocalizedRoutesUsing(Closure $closure) : static
     {
         $this->combineLocalizedRoutesUsing = $closure;
 
         return $this;
     }
 
-    public function buildLocalizedRouteUsing(Closure $closure): static
+    public function buildLocalizedRouteUsing(Closure $closure) : static
     {
         $this->buildLocalizedRouteUsing = $closure;
 
         return $this;
     }
 
-    public function combineLocalizedRoutes(array $routes): array
+    public function combineLocalizedRoutes(array $routes) : array
     {
         return collect($routes)
             ->mapWithKeys(function (LinkPickerRoute $route, string $key) {
                 $route = clone $route;
 
-                if (!$route->is_localized) {
+                if (! $route->is_localized) {
                     return [$key => $route];
                 }
 
@@ -187,11 +187,11 @@ class LinkPicker
 
                 return [$route->name => $route];
             })
-            ->unique(fn(LinkPickerRoute $route) => $route->name)
+            ->unique(fn (LinkPickerRoute $route) => $route->name)
             ->toArray();
     }
 
-    public function buildLocalizedRoute(string $name, array $parameters = [], bool $absolute = true, ?string $locale = null): ?string
+    public function buildLocalizedRoute(string $name, array $parameters = [], bool $absolute = true, ?string $locale = null) : ?string
     {
         if ($this->buildLocalizedRouteUsing instanceof Closure) {
             return call_user_func($this->buildLocalizedRouteUsing, $name, $parameters, $absolute, $locale);
@@ -205,8 +205,16 @@ class LinkPicker
         return null;
     }
 
-    public function dataToLinkEntity(?array $data): Link
+    public function dataToLinkEntity(array|string|Link|null $data) : Link
     {
+        if ($data instanceof Link) {
+            return $data;
+        }
+
+        if (is_string($data)) {
+            $data = json_decode($data, true);
+        }
+
         return Link::makeFromArray($data)->cleanUpParameters();
     }
 }

@@ -2,6 +2,12 @@
 
 All notable changes to `filament-link-picker` will be documented in this file.
 
+## 1.2.4 - 2024-03-07
+
+### Fixed
+
+- Fixed a bug where link picker field was not being filled properly when it was already cast to a Link entity.
+
 ## 1.2.3 - 2024-03-07
 
 ### Fixed
