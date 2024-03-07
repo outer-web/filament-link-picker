@@ -28,108 +28,108 @@ class LinkPicker extends Field
 
     protected bool|Closure $disableOpenInNewTab = false;
 
-    public function disableExternalLinks(bool|Closure $disableExternalLinks = true): static
+    public function disableExternalLinks(bool|Closure $disableExternalLinks = true) : static
     {
         $this->disableExternalLinks = $disableExternalLinks;
 
         return $this;
     }
 
-    public function disableMailto(bool|Closure $disableMailto = true): static
+    public function disableMailto(bool|Closure $disableMailto = true) : static
     {
         $this->disableMailto = $disableMailto;
 
         return $this;
     }
 
-    public function disableTel(bool|Closure $disableTel = true): static
+    public function disableTel(bool|Closure $disableTel = true) : static
     {
         $this->disableTel = $disableTel;
 
         return $this;
     }
 
-    public function disableDownload(bool|Closure $disableDownload = true): static
+    public function disableDownload(bool|Closure $disableDownload = true) : static
     {
         $this->disableDownload = $disableDownload;
 
         return $this;
     }
 
-    public function disableOpenInNewTab(bool|Closure $disableOpenInNewTab = true): static
+    public function disableOpenInNewTab(bool|Closure $disableOpenInNewTab = true) : static
     {
         $this->disableOpenInNewTab = $disableOpenInNewTab;
 
         return $this;
     }
 
-    public function getAllowsExternalLinks(): bool|Closure
+    public function getAllowsExternalLinks() : bool|Closure
     {
-        if (!FacadesLinkPicker::getAllowsExternalLinks()) {
+        if (! FacadesLinkPicker::getAllowsExternalLinks()) {
             return false;
         }
 
-        return !(bool) $this->evaluate($this->disableExternalLinks);
+        return ! (bool) $this->evaluate($this->disableExternalLinks);
     }
 
-    public function getAllowsMailto(): bool|Closure
+    public function getAllowsMailto() : bool|Closure
     {
-        if (!FacadesLinkPicker::getAllowsMailto()) {
+        if (! FacadesLinkPicker::getAllowsMailto()) {
             return false;
         }
 
-        return !(bool) $this->evaluate($this->disableMailto);
+        return ! (bool) $this->evaluate($this->disableMailto);
     }
 
-    public function getAllowsTel(): bool|Closure
+    public function getAllowsTel() : bool|Closure
     {
-        if (!FacadesLinkPicker::getAllowsTel()) {
+        if (! FacadesLinkPicker::getAllowsTel()) {
             return false;
         }
 
-        return !(bool) $this->evaluate($this->disableTel);
+        return ! (bool) $this->evaluate($this->disableTel);
     }
 
-    public function getAllowsDownload(): bool|Closure
+    public function getAllowsDownload() : bool|Closure
     {
-        if (!FacadesLinkPicker::getAllowsDownload()) {
+        if (! FacadesLinkPicker::getAllowsDownload()) {
             return false;
         }
 
-        return !(bool) $this->evaluate($this->disableDownload);
+        return ! (bool) $this->evaluate($this->disableDownload);
     }
 
-    public function getAllowsOpenInNewTab(): bool|Closure
+    public function getAllowsOpenInNewTab() : bool|Closure
     {
-        if (!FacadesLinkPicker::getAllowsOpenInNewTab()) {
+        if (! FacadesLinkPicker::getAllowsOpenInNewTab()) {
             return false;
         }
 
-        return !(bool) $this->evaluate($this->disableOpenInNewTab);
+        return ! (bool) $this->evaluate($this->disableOpenInNewTab);
     }
 
-    public function getRoutes(bool $grouped = false): array
+    public function getRoutes(bool $grouped = false) : array
     {
         return collect(FacadesLinkPicker::getRoutes())
-            ->when($grouped, fn($routes) => $routes->groupBy('group'))
+            ->when($grouped, fn ($routes) => $routes->groupBy('group'))
             ->sortKeys()
             ->toArray();
     }
 
-    public function getRouteLabel(LinkPickerRoute $route): string
+    public function getRouteLabel(LinkPickerRoute $route) : string
     {
         if (is_null($route->label)) {
             return collect(explode('.', $route->name))
-                ->map(fn($part) => Str::title($part))
+                ->map(fn ($part) => Str::title($part))
                 ->implode(' > ');
         }
 
         return $route->label;
     }
 
-    public function getSelectedRoute($state): ?LinkPickerRoute
+    public function getSelectedRoute($state) : ?LinkPickerRoute
     {
-        if (!isset($state['route_name'])) {
+        if (! isset($state['route_name'])) {
             return null;
         }
 
@@ -137,17 +137,17 @@ class LinkPicker extends Field
             ->firstWhere('name', $state['route_name']);
     }
 
-    public function getSelectedRouteHasParameters($state): bool
+    public function getSelectedRouteHasParameters($state) : bool
     {
         return count($this->getSelectedRouteParameters($state)) > 0;
     }
 
-    public function getSelectedRouteParameters($state): array
+    public function getSelectedRouteParameters($state) : array
     {
         return $this->getSelectedRoute($state)?->getRouteParameters()?->toArray() ?? [];
     }
 
-    public function getRouteNameOptions(): array
+    public function getRouteNameOptions() : array
     {
         return collect($this->getRoutes(grouped: true))
             ->mapWithKeys(function ($routes, $group) {
@@ -164,7 +164,7 @@ class LinkPicker extends Field
             ->toArray();
     }
 
-    public function makeFieldFromParameter(object $parameter): Field
+    public function makeFieldFromParameter(object $parameter) : Field
     {
         $name = "parameters.{$parameter->name}";
 
@@ -191,7 +191,7 @@ class LinkPicker extends Field
         };
     }
 
-    protected function setUp(): void
+    protected function setUp() : void
     {
         parent::setUp();
 
@@ -202,23 +202,23 @@ class LinkPicker extends Field
                     Select::make('route_name')
                         ->label(__('filament-link-picker::translations.forms.labels.route_name'))
                         ->options($this->getRouteNameOptions())
-                        ->nullable()
+                        ->required(fn () => $this->isMarkedAsRequired())
                         ->live()
                         ->afterStateUpdated(function (Set $set) {
                             $set('parameters', []);
                         }),
 
                     Fieldset::make(__('filament-link-picker::translations.forms.labels.parameters'))
-                        ->hidden(fn($state) => !$this->getSelectedRouteHasParameters($state))
-                        ->schema(fn($state) => collect($this->getSelectedRouteParameters($state))
-                            ->map(fn(object $parameter) => $this->makeFieldFromParameter($parameter))
+                        ->hidden(fn ($state) => ! $this->getSelectedRouteHasParameters($state))
+                        ->schema(fn ($state) => collect($this->getSelectedRouteParameters($state))
+                            ->map(fn (object $parameter) => $this->makeFieldFromParameter($parameter))
                             ->toArray()),
 
                     Fieldset::make(__('filament-link-picker::translations.forms.labels.options'))
                         ->hidden(
-                            fn($state) =>
+                            fn ($state) =>
                             is_null($this->getSelectedRoute($state)) ||
-                            !(
+                            ! (
                                 $this->getAllowsDownload() &&
                                 $this->getAllowsOpenInNewTab()
                             )
@@ -226,20 +226,20 @@ class LinkPicker extends Field
                         ->schema([
                             Toggle::make('options.is_download')
                                 ->label(__('filament-link-picker::translations.forms.labels.is_download'))
-                                ->hidden(fn() => !$this->getAllowsDownload()),
+                                ->hidden(fn () => ! $this->getAllowsDownload()),
 
                             Toggle::make('options.opens_in_new_tab')
                                 ->label(__('filament-link-picker::translations.forms.labels.opens_in_new_tab'))
-                                ->hidden(fn() => !$this->getAllowsOpenInNewTab()),
+                                ->hidden(fn () => ! $this->getAllowsOpenInNewTab()),
                         ]),
                 ]),
         ]);
 
         $this->registerActions([
-            fn(self $component): Action => $component->getEditAction(),
+            fn (self $component) : Action => $component->getEditAction(),
         ]);
 
-        $this->afterStateHydrated(static function (self $component, $state): void {
+        $this->afterStateHydrated(static function (self $component, $state) : void {
             $component->state(FacadesLinkPicker::dataToLinkEntity($state)->toArray());
         });
 
@@ -248,15 +248,15 @@ class LinkPicker extends Field
         };
     }
 
-    public function getState(): array
+    public function getState() : array
     {
         $state = parent::getState();
 
-        if (!$this->getAllowsDownload()) {
+        if (! $this->getAllowsDownload()) {
             unset($state['options']['is_download']);
         }
 
-        if (!$this->getAllowsOpenInNewTab()) {
+        if (! $this->getAllowsOpenInNewTab()) {
             unset($state['options']['opens_in_new_tab']);
         }
 
