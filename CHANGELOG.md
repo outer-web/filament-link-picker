@@ -2,7 +2,7 @@
 
 All notable changes to `filament-link-picker` will be documented in this file.
 
-## 1.2.1 - 2024-03-07
+## 1.2.2 - 2024-03-07
 
 ### Fixed
 
