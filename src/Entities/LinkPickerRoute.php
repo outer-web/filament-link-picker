@@ -35,7 +35,7 @@ class LinkPickerRoute
         bool $isLocalized = false,
         array $parameterLabels = [],
         array $parameterOptions = [],
-    ): static {
+    ) : static {
         $instance = new static($name, $label, $group, $isLocalized, $parameterLabels, $parameterOptions);
 
         $instance->original_name = $name;
@@ -43,7 +43,7 @@ class LinkPickerRoute
         return $instance;
     }
 
-    public function name(?string $name, bool $overrideOriginalName = false): static
+    public function name(?string $name, bool $overrideOriginalName = false) : static
     {
         $this->name = $name;
 
@@ -54,33 +54,33 @@ class LinkPickerRoute
         return $this;
     }
 
-    public function label(?string $label): static
+    public function label(?string $label) : static
     {
         $this->label = $label;
 
         return $this;
     }
 
-    public function group(?string $group): static
+    public function group(?string $group) : static
     {
         $this->group = $group;
 
         return $this;
     }
 
-    public function isLocalized(bool $isLocalized = true): static
+    public function isLocalized(bool $isLocalized = true) : static
     {
         $this->is_localized = $isLocalized;
 
         return $this;
     }
 
-    public function getRoute(): ?RoutingRoute
+    public function getRoute() : ?RoutingRoute
     {
         return Route::getRoutes()->getByName($this->original_name);
     }
 
-    public function getRouteParameters(): Collection
+    public function getRouteParameters() : Collection
     {
         if (is_null($this->getRoute()) && Str::startsWith($this->original_name, 'external.')) {
             return match (Str::after($this->original_name, 'external.')) {
@@ -115,38 +115,36 @@ class LinkPickerRoute
         $route = $this->getRoute();
         $signatureParameters = collect($route->signatureParameters());
 
-        return once(function () use ($route, $signatureParameters) {
-            return collect($route->parameterNames())
-                ->map(function (string $parameter) use ($signatureParameters, $route) {
-                    $model = null;
-                    $isRequired = false;
-                    $modelRouteKeyName = null;
+        return collect($route->parameterNames())
+            ->map(function (string $parameter) use ($signatureParameters, $route) {
+                $model = null;
+                $isRequired = false;
+                $modelRouteKeyName = null;
 
-                    if ($signatureParameters->contains('name', $parameter)) {
-                        /** @var ReflectionParameter $reflectionParameter */
-                        $reflectionParameter = $signatureParameters->firstWhere('name', $parameter);
+                if ($signatureParameters->contains('name', $parameter)) {
+                    /** @var ReflectionParameter $reflectionParameter */
+                    $reflectionParameter = $signatureParameters->firstWhere('name', $parameter);
 
-                        $model = $reflectionParameter?->getType()?->getName();
-                        $modelRouteKeyName = $route->bindingFieldFor($parameter) ?? $model::$primaryKey ?? 'id';
-                        $isRequired = $reflectionParameter ? !$reflectionParameter->allowsNull() : false;
-                    }
+                    $model = $reflectionParameter?->getType()?->getName();
+                    $modelRouteKeyName = $route->bindingFieldFor($parameter) ?? $model::$primaryKey ?? 'id';
+                    $isRequired = $reflectionParameter ? ! $reflectionParameter->allowsNull() : false;
+                }
 
-                    $parameterOptions = $this->getRouteParameterOptions($parameter, $model);
+                $parameterOptions = $this->getRouteParameterOptions($parameter, $model);
 
-                    return RouteParameter::make(
-                        $parameter,
-                        $this->parameterLabels[$parameter] ?? Str::title($parameter),
-                        count($parameterOptions) ? 'select' : 'text',
-                        $model,
-                        $modelRouteKeyName,
-                        $isRequired,
-                        $this->getRouteParameterOptions($parameter, $model),
-                    );
-                });
-        });
+                return RouteParameter::make(
+                    $parameter,
+                    $this->parameterLabels[$parameter] ?? Str::title($parameter),
+                    count($parameterOptions) ? 'select' : 'text',
+                    $model,
+                    $modelRouteKeyName,
+                    $isRequired,
+                    $this->getRouteParameterOptions($parameter, $model),
+                );
+            });
     }
 
-    public function getRouteParameterOptions(string $parameter, ?string $model): array
+    public function getRouteParameterOptions(string $parameter, ?string $model) : array
     {
         if (isset($this->parameterOptions[$parameter])) {
             return $this->parameterOptions[$parameter];
@@ -171,7 +169,7 @@ class LinkPickerRoute
         return [];
     }
 
-    public function getRouteParameterLabel(Model $model): string
+    public function getRouteParameterLabel(Model $model) : string
     {
         $label = null;
 
@@ -191,7 +189,7 @@ class LinkPickerRoute
         return $label;
     }
 
-    public function build(array $parameters = [], bool $absolute = false, ?string $locale = null): ?string
+    public function build(array $parameters = [], bool $absolute = false, ?string $locale = null) : ?string
     {
         if (Str::startsWith($this->original_name, 'external.')) {
             return match (Str::after($this->original_name, 'external.')) {
@@ -211,7 +209,7 @@ class LinkPickerRoute
         return route($this->original_name, $parameters, $absolute);
     }
 
-    public function castRouteParameters(array $parameters): array
+    public function castRouteParameters(array $parameters) : array
     {
         $routeParameters = $this->getRouteParameters();
 
@@ -228,9 +226,9 @@ class LinkPickerRoute
             ->toArray();
     }
 
-    public function castRouteParameter(RouteParameter $routeParameter, $value): string
+    public function castRouteParameter(RouteParameter $routeParameter, $value) : string
     {
-        if (!is_null($routeParameter->model)) {
+        if (! is_null($routeParameter->model)) {
             return (string) $routeParameter->model::query()
                 ->find($value)?->{$routeParameter->modelRouteKeyName} ?? $value;
         }
