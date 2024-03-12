@@ -2,6 +2,12 @@
 
 All notable changes to `filament-link-picker` will be documented in this file.
 
+## 1.2.5 - 2024-03-12
+
+### Added
+
+- Added support for Laravel 11.
+
 ## 1.2.4 - 2024-03-07
 
 ### Fixed
