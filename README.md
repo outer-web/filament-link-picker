@@ -151,7 +151,7 @@ Marking a route as 'localized' will make the link picker combine all localized v
 Route::get('/your-route', YourController::class)
     ->name('your-route')
     ->filamentLinkPicker(
-        localized: true
+        isLocalized: true
     );
 ```
 
@@ -248,7 +248,7 @@ The link picker can handle localized routes well. To do so, follow these steps:
 Route::get('/your-route', YourController::class)
     ->name('your-route')
     ->filamentLinkPicker(
-        localized: true
+        isLocalized: true
     );
 ```
 
