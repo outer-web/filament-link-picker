@@ -199,7 +199,7 @@ class LinkPicker
 
         if (function_exists('localizedRoute')) {
             // Support `outerweb/localization` package by default
-            return localizedRoute($name, $parameters, $locale, $absolute);
+            return localizedRoute($name, $parameters, $absolute, $locale);
         }
 
         return null;

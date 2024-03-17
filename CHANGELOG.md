@@ -2,6 +2,12 @@
 
 All notable changes to `filament-link-picker` will be documented in this file.
 
+## 1.3.0 - 2024-03-17
+
+### Fixed
+
+- Fixed bug with `localizedRoute()` parameter order.
+
 ## 1.2.5 - 2024-03-12
 
 ### Added

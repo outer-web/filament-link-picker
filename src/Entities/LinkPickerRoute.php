@@ -146,7 +146,7 @@ class LinkPickerRoute
 
     public function getRouteParameterOptions(string $parameter, ?string $model) : array
     {
-        if (isset($this->parameterOptions[$parameter])) {
+        if (isset ($this->parameterOptions[$parameter])) {
             return $this->parameterOptions[$parameter];
         }
 
@@ -189,7 +189,7 @@ class LinkPickerRoute
         return $label;
     }
 
-    public function build(array $parameters = [], bool $absolute = false, ?string $locale = null) : ?string
+    public function build(array $parameters = [], bool $absolute = true, ?string $locale = null) : ?string
     {
         if (Str::startsWith($this->original_name, 'external.')) {
             return match (Str::after($this->original_name, 'external.')) {

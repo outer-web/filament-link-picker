@@ -12,7 +12,7 @@ class Link extends Component
     public function __construct(
         public EntitiesLink|array|string|null $link,
         public ?string $label = null,
-        public bool $absolute = false,
+        public bool $absolute = true,
         public ?string $locale = null,
     ) {
         if (is_string($link)) {
@@ -24,13 +24,13 @@ class Link extends Component
         }
     }
 
-    public function render(): View|Closure|string
+    public function render() : View|Closure|string
     {
         return view('filament-link-picker::components.link');
     }
 
-    public function shouldRender(): bool
+    public function shouldRender() : bool
     {
-        return !is_null($this->link);
+        return ! is_null($this->link);
     }
 }
