@@ -316,7 +316,9 @@ $link = LinkPicker::dataToLinkEntity(array $data);
 You can use the `<x-filament-link-picker-link />` blade component to render the link.
 
 ```blade
-<x-filament-link-picker-link :link="$link" />
+<x-filament-link-picker-link :link="$link">
+    Your label here
+</x-filament-link-picker-link>
 ```
 
 The link picker options like `is_download` and `opens_in_new_tab` will only take effect when you do not specify them on the component itself. If you do specify them, the component will use the specified values.
