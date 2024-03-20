@@ -18,11 +18,11 @@ class Link
         ?string $route_name = null,
         array $parameters = [],
         array $options = [],
-    ): static {
+    ) : static {
         return new static($route_name, $parameters, $options);
     }
 
-    public static function makeFromArray(?array $data): static
+    public static function makeFromArray(?array $data) : static
     {
         if (is_null($data)) {
             return new static();
@@ -35,12 +35,12 @@ class Link
         );
     }
 
-    public function __get(string $key): mixed
+    public function __get(string $key) : mixed
     {
         return $this->options[$key] ?? null;
     }
 
-    public function toArray(): array
+    public function toArray() : array
     {
         return [
             'route_name' => $this->route_name,
@@ -49,7 +49,7 @@ class Link
         ];
     }
 
-    public function cleanUpParameters(): self
+    public function cleanUpParameters() : self
     {
         $routeParameters = LinkPicker::getRouteByName($this->route_name)?->getRouteParameters() ?? [];
 
@@ -62,8 +62,8 @@ class Link
         return $this;
     }
 
-    public function build($absolute = true, ?string $locale = null): ?string
+    public function build($absolute = true, ?string $locale = null) : ?string
     {
-        return LinkPicker::getRouteByName($this->route_name)->build($this->parameters, $absolute, $locale);
+        return LinkPicker::getRouteByName($this->route_name)?->build($this->parameters, $absolute, $locale);
     }
 }

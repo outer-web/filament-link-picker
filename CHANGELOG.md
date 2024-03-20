@@ -2,6 +2,12 @@
 
 All notable changes to `filament-link-picker` will be documented in this file.
 
+## 1.4.0 - 2024-03-20
+
+### Fixed
+
+- Fixed issue where the `Link` entity could call `build()` on a null value.
+
 ## 1.3.0 - 2024-03-17
 
 ### Fixed
