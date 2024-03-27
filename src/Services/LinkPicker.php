@@ -3,6 +3,8 @@
 namespace Outerweb\FilamentLinkPicker\Services;
 
 use Closure;
+use Illuminate\Routing\Route as RoutingRoute;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Outerweb\FilamentLinkPicker\Entities\Link;
 use Outerweb\FilamentLinkPicker\Entities\LinkPickerRoute;
@@ -113,8 +115,31 @@ class LinkPicker
         return $this;
     }
 
+    public function registerApplicationRoutes() : void
+    {
+        collect(Route::getRoutes())
+            ->each(function (RoutingRoute $route) {
+                $data = $route->getAction('linkPickerRoute');
+
+                if (! $data) {
+                    return;
+                }
+
+                $this->addRoute(LinkPickerRoute::make(
+                    $data['routeName'] ?? $route->getName(),
+                    $data['label'] ?? null,
+                    $data['group'] ?? null,
+                    $data['isLocalized'] ?? false,
+                    $data['parameterLabels'] ?? [],
+                    $data['parameterOptions'] ?? []
+                ));
+            });
+    }
+
     public function getRoutes() : array
     {
+        $this->registerApplicationRoutes();
+
         if ($this->getTranslateLabels()) {
             $this->routes = collect($this->routes)
                 ->map(function (LinkPickerRoute $route) {

@@ -93,16 +93,14 @@ class FilamentLinkPickerServiceProvider extends PackageServiceProvider
                 /** @var Route $route */
                 $route = $this;
 
-                FacadesLinkPicker::addRoute(
-                    LinkPickerRoute::make(
-                        $route->getName(),
-                        $label,
-                        $group,
-                        $isLocalized,
-                        $parameterLabels,
-                        $parameterOptions
-                    )
-                );
+                $route->action['linkPickerRoute'] = [
+                    'routeName' => $route->getName(),
+                    'label' => $label,
+                    'group' => $group,
+                    'isLocalized' => $isLocalized,
+                    'parameterLabels' => $parameterLabels,
+                    'parameterOptions' => $parameterOptions
+                ];
             }
         );
     }

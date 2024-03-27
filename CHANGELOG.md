@@ -8,6 +8,10 @@ All notable changes to `filament-link-picker` will be documented in this file.
 
 - Added better support for multiple locales by adding a `translateLabels()` method to the plugin.
 
+### Fixed
+
+- Rewrote the internal code to make routes still visible in the picker field when route:cache is ran.
+
 ## 1.4.0 - 2024-03-20
 
 ### Fixed
