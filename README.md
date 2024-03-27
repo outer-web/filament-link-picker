@@ -103,6 +103,35 @@ FilamentLinkPickerPlugin::make()
     ->disableOpenInNewTab();
 ```
 
+### Multi language support
+
+You can enable multi language support by adding the `translateLabels` method to the plugin.
+
+```php
+FilamentLinkPickerPlugin::make()
+    ->translateLabels();
+```
+
+The following items can be translated:
+
+- label: The label of the route defined in the `filamentLinkPicker()` method.
+- group: The group of the route defined in the `filamentLinkPicker()` method.
+- parameter labels: The labels of the parameters defined in the `filamentLinkPicker()` method.
+
+To do so, just set the values to the translation key.
+
+```php
+Route::get('/your-route/{parameter}', YourController::class)
+    ->name('your-route')
+    ->filamentLinkPicker(
+        label: 'your-route.label',
+        group: 'your-route.group',
+        parameterLabels: [
+            'parameter' => 'your-route.parameter',
+        ]
+    );
+```
+
 ## Usage
 
 ### Setting up routes

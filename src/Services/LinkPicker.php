@@ -31,6 +31,8 @@ class LinkPicker
 
     protected ?Closure $buildLocalizedRouteUsing = null;
 
+    protected bool|Closure $translateLabels = false;
+
     public function getExternalLinkRoute() : LinkPickerRoute
     {
         return LinkPickerRoute::make(
@@ -104,8 +106,32 @@ class LinkPicker
         return $this;
     }
 
+    public function translateLabels(bool|Closure $translateLabels = true) : static
+    {
+        $this->translateLabels = $translateLabels;
+
+        return $this;
+    }
+
     public function getRoutes() : array
     {
+        if ($this->getTranslateLabels()) {
+            $this->routes = collect($this->routes)
+                ->map(function (LinkPickerRoute $route) {
+                    $route->label(__($route->label));
+                    $route->group(__($route->group));
+                    $route->parameterLabels(collect($route->parameterLabels)
+                        ->map(function ($label) {
+                            return __($label);
+                        })
+                        ->toArray()
+                    );
+
+                    return $route;
+                })
+                ->toArray();
+        }
+
         return $this->combineLocalizedRoutes($this->routes);
     }
 
@@ -151,6 +177,11 @@ class LinkPicker
         return ! ($this->disableOpenInNewTab instanceof Closure
             ? call_user_func($this->disableOpenInNewTab)
             : $this->disableOpenInNewTab);
+    }
+
+    public function getTranslateLabels() : bool|Closure
+    {
+        return $this->translateLabels;
     }
 
     public function combineLocalizedRoutesUsing(Closure $closure) : static

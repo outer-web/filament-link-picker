@@ -13,7 +13,7 @@ use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 class FilamentLinkPickerServiceProvider extends PackageServiceProvider
 {
-    public function configurePackage(Package $package): void
+    public function configurePackage(Package $package) : void
     {
         $package
             ->name('filament-link-picker')
@@ -49,8 +49,12 @@ class FilamentLinkPickerServiceProvider extends PackageServiceProvider
             FacadesLinkPicker::addRoute(
                 LinkPickerRoute::make(
                     LinkPicker::ROUTE_EXTERNAL_LINK,
-                    __('filament-link-picker::translations.route_names.external.link'),
-                    __('filament-link-picker::translations.route_groups.external')
+                    FacadesLinkPicker::getTranslateLabels()
+                    ? 'filament-link-picker::translations.route_names.external.link'
+                    : __('filament-link-picker::translations.route_names.external.link'),
+                    FacadesLinkPicker::getTranslateLabels()
+                    ? 'filament-link-picker::translations.route_groups.external'
+                    : __('filament-link-picker::translations.route_groups.external')
                 )
             );
         }
@@ -59,8 +63,12 @@ class FilamentLinkPickerServiceProvider extends PackageServiceProvider
             FacadesLinkPicker::addRoute(
                 LinkPickerRoute::make(
                     LinkPicker::ROUTE_MAILTO,
-                    __('filament-link-picker::translations.route_names.external.mailto'),
-                    __('filament-link-picker::translations.route_groups.external')
+                    FacadesLinkPicker::getTranslateLabels()
+                    ? 'filament-link-picker::translations.route_names.external.mailto'
+                    : __('filament-link-picker::translations.route_names.external.mailto'),
+                    FacadesLinkPicker::getTranslateLabels()
+                    ? 'filament-link-picker::translations.route_groups.external'
+                    : __('filament-link-picker::translations.route_groups.external')
                 )
             );
         }
@@ -69,8 +77,12 @@ class FilamentLinkPickerServiceProvider extends PackageServiceProvider
             FacadesLinkPicker::addRoute(
                 LinkPickerRoute::make(
                     LinkPicker::ROUTE_TEL,
-                    __('filament-link-picker::translations.route_names.external.tel'),
-                    __('filament-link-picker::translations.route_groups.external')
+                    FacadesLinkPicker::getTranslateLabels()
+                    ? 'filament-link-picker::translations.route_names.external.tel'
+                    : __('filament-link-picker::translations.route_names.external.tel'),
+                    FacadesLinkPicker::getTranslateLabels()
+                    ? 'filament-link-picker::translations.route_groups.external'
+                    : __('filament-link-picker::translations.route_groups.external')
                 )
             );
         }

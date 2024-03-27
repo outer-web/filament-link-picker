@@ -2,6 +2,12 @@
 
 All notable changes to `filament-link-picker` will be documented in this file.
 
+## 2.0.0 - 2024-03-27
+
+### Added
+
+- Added better support for multiple locales by adding a `translateLabels()` method to the plugin.
+
 ## 1.4.0 - 2024-03-20
 
 ### Fixed

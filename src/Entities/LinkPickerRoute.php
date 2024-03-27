@@ -75,6 +75,13 @@ class LinkPickerRoute
         return $this;
     }
 
+    public function parameterLabels(array $parameterLabels) : static
+    {
+        $this->parameterLabels = $parameterLabels;
+
+        return $this;
+    }
+
     public function getRoute() : ?RoutingRoute
     {
         return Route::getRoutes()->getByName($this->original_name);
@@ -146,7 +153,7 @@ class LinkPickerRoute
 
     public function getRouteParameterOptions(string $parameter, ?string $model) : array
     {
-        if (isset ($this->parameterOptions[$parameter])) {
+        if (isset($this->parameterOptions[$parameter])) {
             return $this->parameterOptions[$parameter];
         }
 
