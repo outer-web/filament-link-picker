@@ -125,6 +125,24 @@ class LinkPicker
                     return;
                 }
 
+                if ($data['label'] ?? false) {
+                    $data['label'] = $this->getTranslateLabels()
+                        ? __($data['label'])
+                        : $data['label'];
+                }
+
+                if ($data['group'] ?? false) {
+                    $data['group'] = $this->getTranslateLabels()
+                        ? __($data['group'])
+                        : $data['group'];
+                }
+
+                foreach ($data['parameterLabels'] ?? [] as $key => $label) {
+                    $data['parameterLabels'][$key] = $this->getTranslateLabels()
+                        ? __($label)
+                        : $label;
+                }
+
                 $this->addRoute(LinkPickerRoute::make(
                     $data['routeName'] ?? $route->getName(),
                     $data['label'] ?? null,
@@ -136,28 +154,85 @@ class LinkPicker
             });
     }
 
-    public function getRoutes() : array
+    public function registerExternalLinkRoute() : void
     {
-        $this->registerApplicationRoutes();
-
-        if ($this->getTranslateLabels()) {
-            $this->routes = collect($this->routes)
-                ->map(function (LinkPickerRoute $route) {
-                    $route->label(__($route->label));
-                    $route->group(__($route->group));
-                    $route->parameterLabels(collect($route->parameterLabels)
-                        ->map(function ($label) {
-                            return __($label);
-                        })
-                        ->toArray()
-                    );
-
-                    return $route;
-                })
-                ->toArray();
+        if (! $this->getAllowsExternalLinks()) {
+            return;
         }
 
-        return $this->combineLocalizedRoutes($this->routes);
+        $this->addRoute(
+            LinkPickerRoute::make(
+                LinkPicker::ROUTE_EXTERNAL_LINK,
+                __('filament-link-picker::translations.route_names.external.link'),
+                __('filament-link-picker::translations.route_groups.external')
+            )
+        );
+    }
+
+    public function registerMailtoRoute() : void
+    {
+        if (! $this->getAllowsMailto()) {
+            return;
+        }
+
+        $this->addRoute(
+            LinkPickerRoute::make(
+                LinkPicker::ROUTE_MAILTO,
+                __('filament-link-picker::translations.route_names.external.mailto'),
+                __('filament-link-picker::translations.route_groups.external')
+            )
+        );
+    }
+
+    public function registerTelRoute() : void
+    {
+        if (! $this->getAllowsTel()) {
+            return;
+        }
+
+        $this->addRoute(
+            LinkPickerRoute::make(
+                LinkPicker::ROUTE_TEL,
+                __('filament-link-picker::translations.route_names.external.tel'),
+                __('filament-link-picker::translations.route_groups.external')
+            )
+        );
+    }
+
+    public function getRoutes() : array
+    {
+        $this->routes = [];
+
+        $this->registerApplicationRoutes();
+        $this->combineLocalizedRoutes();
+        $this->registerExternalLinkRoute();
+        $this->registerMailtoRoute();
+        $this->registerTelRoute();
+
+        return $this->routes;
+    }
+
+    public function combineLocalizedRoutes() : void
+    {
+        $this->routes = collect($this->routes)->mapWithKeys(function (LinkPickerRoute $route, string $key) {
+            $route = clone $route;
+
+            if (! $route->is_localized) {
+                return [$key => $route];
+            }
+
+            if ($this->combineLocalizedRoutesUsing instanceof Closure) {
+                $route = call_user_func($this->combineLocalizedRoutesUsing, $route);
+
+                return [$route->name => $route];
+            }
+
+            $route->name(Str::after($route->name, '.'));
+
+            return [$route->name => $route];
+        })
+            ->unique(fn (LinkPickerRoute $route) => $route->name)
+            ->toArray();
     }
 
     public function getRouteByName(?string $name) : ?LinkPickerRoute
@@ -221,30 +296,6 @@ class LinkPicker
         $this->buildLocalizedRouteUsing = $closure;
 
         return $this;
-    }
-
-    public function combineLocalizedRoutes(array $routes) : array
-    {
-        return collect($routes)
-            ->mapWithKeys(function (LinkPickerRoute $route, string $key) {
-                $route = clone $route;
-
-                if (! $route->is_localized) {
-                    return [$key => $route];
-                }
-
-                if ($this->combineLocalizedRoutesUsing instanceof Closure) {
-                    $route = call_user_func($this->combineLocalizedRoutesUsing, $route);
-
-                    return [$route->name => $route];
-                }
-
-                $route->name(Str::after($route->name, '.'));
-
-                return [$route->name => $route];
-            })
-            ->unique(fn (LinkPickerRoute $route) => $route->name)
-            ->toArray();
     }
 
     public function buildLocalizedRoute(string $name, array $parameters = [], bool $absolute = true, ?string $locale = null) : ?string

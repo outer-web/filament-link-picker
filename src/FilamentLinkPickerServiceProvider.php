@@ -45,48 +45,6 @@ class FilamentLinkPickerServiceProvider extends PackageServiceProvider
             return new LinkPicker();
         });
 
-        if (FacadesLinkPicker::getAllowsExternalLinks()) {
-            FacadesLinkPicker::addRoute(
-                LinkPickerRoute::make(
-                    LinkPicker::ROUTE_EXTERNAL_LINK,
-                    FacadesLinkPicker::getTranslateLabels()
-                    ? 'filament-link-picker::translations.route_names.external.link'
-                    : __('filament-link-picker::translations.route_names.external.link'),
-                    FacadesLinkPicker::getTranslateLabels()
-                    ? 'filament-link-picker::translations.route_groups.external'
-                    : __('filament-link-picker::translations.route_groups.external')
-                )
-            );
-        }
-
-        if (FacadesLinkPicker::getAllowsMailto()) {
-            FacadesLinkPicker::addRoute(
-                LinkPickerRoute::make(
-                    LinkPicker::ROUTE_MAILTO,
-                    FacadesLinkPicker::getTranslateLabels()
-                    ? 'filament-link-picker::translations.route_names.external.mailto'
-                    : __('filament-link-picker::translations.route_names.external.mailto'),
-                    FacadesLinkPicker::getTranslateLabels()
-                    ? 'filament-link-picker::translations.route_groups.external'
-                    : __('filament-link-picker::translations.route_groups.external')
-                )
-            );
-        }
-
-        if (FacadesLinkPicker::getAllowsTel()) {
-            FacadesLinkPicker::addRoute(
-                LinkPickerRoute::make(
-                    LinkPicker::ROUTE_TEL,
-                    FacadesLinkPicker::getTranslateLabels()
-                    ? 'filament-link-picker::translations.route_names.external.tel'
-                    : __('filament-link-picker::translations.route_names.external.tel'),
-                    FacadesLinkPicker::getTranslateLabels()
-                    ? 'filament-link-picker::translations.route_groups.external'
-                    : __('filament-link-picker::translations.route_groups.external')
-                )
-            );
-        }
-
         Route::macro(
             'filamentLinkPicker',
             function (?string $label = null, ?string $group = null, bool $isLocalized = false, array $parameterLabels = [], array $parameterOptions = []) {

@@ -2,6 +2,12 @@
 
 All notable changes to `filament-link-picker` will be documented in this file.
 
+## 2.0.1 - 2024-03-28
+
+### Changed
+
+- Changed the internal way to get the routes on demand to work better with multi locale applications.
+
 ## 2.0.0 - 2024-03-27
 
 ### Added
