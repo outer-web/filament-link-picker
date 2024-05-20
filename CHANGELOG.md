@@ -2,6 +2,12 @@
 
 All notable changes to `filament-link-picker` will be documented in this file.
 
+## 3.0.1 - 2024-05-21
+
+### Fixed
+
+- Fixed a bug where the scopeLinkPickerOptions was not properly being called.
+
 ## 3.0.0 - 2024-05-20
 
 ### Added

@@ -9,9 +9,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
-use Outerweb\FilamentLinkPicker\Contracts\HasLinkPickerOptions;
 use Outerweb\FilamentLinkPicker\Facades\LinkPicker;
-use ReflectionClass;
 use ReflectionParameter;
 
 class LinkPickerRoute
@@ -38,7 +36,7 @@ class LinkPickerRoute
         array $parameterLabels = [],
         array $parameterOptions = [],
         array $parameterModelKeys = [],
-    ) : static {
+    ): static {
         $instance = new static($name, $label, $group, $isLocalized, $parameterLabels, $parameterOptions, $parameterModelKeys);
 
         $instance->original_name = $name;
@@ -46,7 +44,7 @@ class LinkPickerRoute
         return $instance;
     }
 
-    public function name(?string $name, bool $overrideOriginalName = false) : static
+    public function name(?string $name, bool $overrideOriginalName = false): static
     {
         $this->name = $name;
 
@@ -57,40 +55,40 @@ class LinkPickerRoute
         return $this;
     }
 
-    public function label(?string $label) : static
+    public function label(?string $label): static
     {
         $this->label = $label;
 
         return $this;
     }
 
-    public function group(?string $group) : static
+    public function group(?string $group): static
     {
         $this->group = $group;
 
         return $this;
     }
 
-    public function isLocalized(bool $isLocalized = true) : static
+    public function isLocalized(bool $isLocalized = true): static
     {
         $this->is_localized = $isLocalized;
 
         return $this;
     }
 
-    public function parameterLabels(array $parameterLabels) : static
+    public function parameterLabels(array $parameterLabels): static
     {
         $this->parameterLabels = $parameterLabels;
 
         return $this;
     }
 
-    public function getRoute() : ?RoutingRoute
+    public function getRoute(): ?RoutingRoute
     {
         return Route::getRoutes()->getByName($this->original_name);
     }
 
-    public function getRouteParameters() : Collection
+    public function getRouteParameters(): Collection
     {
         if (is_null($this->getRoute()) && Str::startsWith($this->original_name, 'external.')) {
             return match (Str::after($this->original_name, 'external.')) {
@@ -125,7 +123,6 @@ class LinkPickerRoute
         $route = $this->getRoute();
         $signatureParameters = collect($route->signatureParameters());
 
-
         return collect($route->parameterNames())
             ->map(function (string $parameter) use ($signatureParameters, $route) {
 
@@ -156,26 +153,25 @@ class LinkPickerRoute
             });
     }
 
-    public function getRouteParameterOptions(string $parameter, ?string $model, ?string $modelKey = null) : array
+    public function getRouteParameterOptions(string $parameter, ?string $model, ?string $modelKey = null): array
     {
         if (isset($this->parameterOptions[$parameter])) {
             return $this->parameterOptions[$parameter];
         }
 
         if ($model) {
-            $class = new ReflectionClass($model);
-
             return $model::query()
-                ->when(method_exists($class, 'scopeLinkPickerOptions'), function (Builder $query) {
+                ->when(method_exists($model, 'scopeLinkPickerOptions'), function (Builder $query) {
                     return $query->linkPickerOptions();
                 })
                 ->get()
-                ->mapWithKeys(function (Model $model) use($modelKey) {
+                ->mapWithKeys(function (Model $model) use ($modelKey) {
                     $label = $this->getRouteParameterLabel($model);
 
-                    if(!empty($modelKey)){
+                    if (! empty($modelKey)) {
                         return [$model->{$modelKey} => $label];
                     }
+
                     return [$model->getKey() => $label];
                 })
                 ->toArray();
@@ -184,7 +180,7 @@ class LinkPickerRoute
         return [];
     }
 
-    public function getRouteParameterLabel(Model $model) : string
+    public function getRouteParameterLabel(Model $model): string
     {
         $label = null;
 
@@ -204,7 +200,7 @@ class LinkPickerRoute
         return $label;
     }
 
-    public function build(array $parameters = [], bool $absolute = true, ?string $locale = null) : ?string
+    public function build(array $parameters = [], bool $absolute = true, ?string $locale = null): ?string
     {
         if (Str::startsWith($this->original_name, 'external.')) {
             return match (Str::after($this->original_name, 'external.')) {
@@ -224,7 +220,7 @@ class LinkPickerRoute
         return route($this->original_name, $parameters, $absolute);
     }
 
-    public function castRouteParameters(array $parameters) : array
+    public function castRouteParameters(array $parameters): array
     {
         $routeParameters = $this->getRouteParameters();
 
@@ -241,7 +237,7 @@ class LinkPickerRoute
             ->toArray();
     }
 
-    public function castRouteParameter(RouteParameter $routeParameter, $value) : string
+    public function castRouteParameter(RouteParameter $routeParameter, $value): string
     {
         if (! is_null($routeParameter->model)) {
             return (string) $routeParameter->model::query()
