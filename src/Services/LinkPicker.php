@@ -149,7 +149,8 @@ class LinkPicker
                     $data['group'] ?? null,
                     $data['isLocalized'] ?? false,
                     $data['parameterLabels'] ?? [],
-                    $data['parameterOptions'] ?? []
+                    $data['parameterOptions'] ?? [],
+                    $data['parameterModelKeys']??[]
                 ));
             });
     }
