@@ -2,6 +2,12 @@
 
 All notable changes to `filament-link-picker` will be documented in this file.
 
+## 3.0.0 - 2024-05-20
+
+### Added
+
+- Added a way to specify the model key for each route parameter that should be saved in the database. (Thank you [Nuhel](https://github.com/Nuhel))
+
 ## 2.0.1 - 2024-03-28
 
 ### Changed

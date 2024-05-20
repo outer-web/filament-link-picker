@@ -112,17 +112,6 @@ FilamentLinkPickerPlugin::make()
     ->translateLabels();
 ```
 
-You can also set the column name, for to set the value while resolving the model route binding options.
-```php
-Route::get('/event/{event:slug}', 'show')->name('show')->filamentLinkPicker(
-        label: 'Single Event',
-        group: 'Details Page',
-        parameterModelKeys: [
-            'event' => 'slug',
-        ]
-    );
-```
-
 The following items can be translated:
 
 - label: The label of the route defined in the `filamentLinkPicker()` method.
@@ -224,6 +213,20 @@ Route::get('/your-route/{parameter}', YourController::class)
                 'option1' => 'Option 1',
                 'option2' => 'Option 2',
             ]
+        ]
+    );
+```
+
+#### Explicitly defining the column name to store the value in the database
+
+By default, the package will use the `$model->getKey()` method to store the selected value of a parameter in the database. If you want to store the value in a different column, you can pass the column name as an argument to the `filamentLinkPicker()` method.
+
+```php
+Route::get('/event/{event:slug}', 'show')->name('show')->filamentLinkPicker(
+        label: 'Single Event',
+        group: 'Details Page',
+        parameterModelKeys: [
+            'event' => 'slug',
         ]
     );
 ```
@@ -376,6 +379,7 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 ## Credits
 
 - [Simon Broekaert](https://github.com/SimonBroekaert)
+- [Nuhel](https://github.com/Nuhel)
 - [All Contributors](../../contributors)
 
 ## License
