@@ -47,7 +47,7 @@ class FilamentLinkPickerServiceProvider extends PackageServiceProvider
 
         Route::macro(
             'filamentLinkPicker',
-            function (?string $label = null, ?string $group = null, bool $isLocalized = false, array $parameterLabels = [], array $parameterOptions = []) {
+            function (?string $label = null, ?string $group = null, bool $isLocalized = false, array $parameterLabels = [], array $parameterOptions = [], array $parameterModelKeys = []) {
                 /** @var Route $route */
                 $route = $this;
 
@@ -57,7 +57,8 @@ class FilamentLinkPickerServiceProvider extends PackageServiceProvider
                     'group' => $group,
                     'isLocalized' => $isLocalized,
                     'parameterLabels' => $parameterLabels,
-                    'parameterOptions' => $parameterOptions
+                    'parameterOptions' => $parameterOptions,
+                    'parameterModelKeys' => $parameterModelKeys
                 ];
             }
         );

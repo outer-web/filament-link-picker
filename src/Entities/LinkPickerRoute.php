@@ -5,6 +5,7 @@ namespace Outerweb\FilamentLinkPicker\Entities;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Routing\Route as RoutingRoute;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -24,6 +25,7 @@ class LinkPickerRoute
         public bool $is_localized = false,
         public array $parameterLabels = [],
         public array $parameterOptions = [],
+        public array $parameterModelKeys = [],
     ) {
         $this->original_name = $name;
     }
@@ -35,8 +37,9 @@ class LinkPickerRoute
         bool $isLocalized = false,
         array $parameterLabels = [],
         array $parameterOptions = [],
+        array $parameterModelKeys = [],
     ) : static {
-        $instance = new static($name, $label, $group, $isLocalized, $parameterLabels, $parameterOptions);
+        $instance = new static($name, $label, $group, $isLocalized, $parameterLabels, $parameterOptions, $parameterModelKeys);
 
         $instance->original_name = $name;
 
@@ -122,8 +125,10 @@ class LinkPickerRoute
         $route = $this->getRoute();
         $signatureParameters = collect($route->signatureParameters());
 
+
         return collect($route->parameterNames())
             ->map(function (string $parameter) use ($signatureParameters, $route) {
+
                 $model = null;
                 $isRequired = false;
                 $modelRouteKeyName = null;
@@ -146,12 +151,12 @@ class LinkPickerRoute
                     $model,
                     $modelRouteKeyName,
                     $isRequired,
-                    $this->getRouteParameterOptions($parameter, $model),
+                    $this->getRouteParameterOptions($parameter, $model, Arr::get($this->parameterModelKeys, $parameter)),
                 );
             });
     }
 
-    public function getRouteParameterOptions(string $parameter, ?string $model) : array
+    public function getRouteParameterOptions(string $parameter, ?string $model, ?string $modelKey = null) : array
     {
         if (isset($this->parameterOptions[$parameter])) {
             return $this->parameterOptions[$parameter];
@@ -165,9 +170,12 @@ class LinkPickerRoute
                     return $query->linkPickerOptions();
                 })
                 ->get()
-                ->mapWithKeys(function (Model $model) {
+                ->mapWithKeys(function (Model $model) use($modelKey) {
                     $label = $this->getRouteParameterLabel($model);
 
+                    if(!empty($modelKey)){
+                        return [$model->{$modelKey} => $label];
+                    }
                     return [$model->getKey() => $label];
                 })
                 ->toArray();
