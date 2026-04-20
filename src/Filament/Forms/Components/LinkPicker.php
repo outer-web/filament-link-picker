@@ -3,13 +3,13 @@
 namespace Outerweb\FilamentLinkPicker\Filament\Forms\Components;
 
 use Closure;
-use Filament\Forms\Components\Actions\Action;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Field;
-use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Set;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Utilities\Set;
 use Illuminate\Support\Str;
 use Outerweb\FilamentLinkPicker\Entities\LinkPickerRoute;
 use Outerweb\FilamentLinkPicker\Facades\LinkPicker as FacadesLinkPicker;

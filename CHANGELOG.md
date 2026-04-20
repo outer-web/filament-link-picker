@@ -2,6 +2,17 @@
 
 All notable changes to `filament-link-picker` will be documented in this file.
 
+## 4.0.0 - 2026-04-20
+
+### Added
+
+- Added support for Laravel 13.
+- Added support for Filament v4 and v5.
+
+## Changed
+
+- Updated required PHP version to 8.4.
+
 ## 3.1.0 - 2025-02-27
 
 ### Added
