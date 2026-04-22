@@ -11,6 +11,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Utilities\Set;
 use Illuminate\Support\Str;
+use Outerweb\FilamentLinkPicker\Entities\Link;
 use Outerweb\FilamentLinkPicker\Entities\LinkPickerRoute;
 use Outerweb\FilamentLinkPicker\Facades\LinkPicker as FacadesLinkPicker;
 
@@ -127,8 +128,12 @@ class LinkPicker extends Field
         return $route->label;
     }
 
-    public function getSelectedRoute($state) : ?LinkPickerRoute
+    public function getSelectedRoute(Link|array|null $state) : ?LinkPickerRoute
     {
+        if ($state instanceof Link) {
+            $state = $state->toArray();
+        }
+
         if (! isset($state['route_name'])) {
             return null;
         }
@@ -217,11 +222,11 @@ class LinkPicker extends Field
                     Fieldset::make(__('filament-link-picker::translations.forms.labels.options'))
                         ->hidden(
                             fn ($state) =>
-                            is_null($this->getSelectedRoute($state)) ||
-                            ! (
-                                $this->getAllowsDownload() &&
-                                $this->getAllowsOpenInNewTab()
-                            )
+                                is_null($this->getSelectedRoute($state)) ||
+                                ! (
+                                    $this->getAllowsDownload() &&
+                                    $this->getAllowsOpenInNewTab()
+                                )
                         )
                         ->schema([
                             Toggle::make('options.is_download')
@@ -251,6 +256,10 @@ class LinkPicker extends Field
     public function getState() : array
     {
         $state = parent::getState();
+
+        if ($state instanceof Link) {
+            $state = $state->toArray();
+        }
 
         if (! $this->getAllowsDownload()) {
             unset($state['options']['is_download']);

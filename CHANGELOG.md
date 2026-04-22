@@ -2,6 +2,12 @@
 
 All notable changes to `filament-link-picker` will be documented in this file.
 
+## 4.0.1 - 2026-04-21
+
+### Fixed
+
+- Fixed a bug where the `Link` entity was being used as an array
+
 ## 4.0.0 - 2026-04-20
 
 ### Added
